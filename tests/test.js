@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 const { Client, Game, SkyWars, BedWars, UHC, SpeedUHC, MurderMystery, Duels, BuildBattle, MegaWalls, CopsAndCrims, TNTGames, SmashHeroes, VampireZ, BlitzSurvivalGames, ArenaBrawl, Guild, PlayerCosmetics, Pets, Pet, Color, ServerInfo } = require('../src');
+new (require('hypixel-api-tester')).Server().listen(3000);
 const client = new Client(process.env.HYPIXEL_KEY, { cache: true });
 const { expect } = require('chai');
 describe('Client#getPlayer', () => {

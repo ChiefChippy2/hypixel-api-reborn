@@ -51,6 +51,7 @@
     "dtslint": "^4.0.8",
     "eslint": "^7.23.0",
     "eslint-config-google": "^0.14.0",
+    "hypixel-api-tester": "github:ChiefChippy2/HypixelAPITester",
     "mocha": "^8.3.2",
     "node-env-run": "^4.0.2",
     "path": "^0.12.7",

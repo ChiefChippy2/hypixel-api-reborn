@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 const fetch = require('node-fetch');
-const BASE_URL = 'https://api.hypixel.net';
+const BASE_URL = process.env.HYPIXEL_API_ENDPOINT || 'https://api.hypixel.net';
 const Errors = require('../Errors');
 const cached = new Map();
 module.exports = class Requests {
