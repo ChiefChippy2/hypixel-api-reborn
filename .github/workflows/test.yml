@@ -8,6 +8,7 @@ on:
     paths:
     - '**.js'
     branches: [ master ]
+  workflow_dispatch:
   # pull_request:
   #   paths:
   #   - '**.js'
@@ -41,4 +42,5 @@ jobs:
     - name: Tests
       run: npm test
       env:
-        HYPIXEL_KEY: ${{secrets.HYPIXEL_KEY}}
+        HYPIXEL_KEY: '12345678-1234-1234-1234-123456789abc'
+        HYPIXEL_API_ENDPOINT: 'http://localhost:3000/'
