@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 const {Client} = require('../src');
 const {EventEmitter} = require('events');
+const { readFileSync, existsSync } = require('fs');
 const requestsOverride = new (require('../src/Private/requests'))();
 
 /**
@@ -124,8 +125,10 @@ class Controller extends EventEmitter {
       keyCount+=obj.keyCount;
       accessedCount+=Math.min(obj.accessedCount, obj.keyCount);
       // eslint-disable-next-line max-len
-      toBeAccessed = toBeAccessed.concat(obj.toBeAccessed.map((x)=>`${obj.path.join('.')}.${x} => ${obj.path.reduce((pV, cV)=>pV[cV], finalObj) ? obj.path.reduce((pV, cV)=>pV[cV], finalObj)[x] : 'Unreachable'}`));
+      toBeAccessed = toBeAccessed.concat(obj.toBeAccessed.map((x)=>isIgnored(obj.path) ? `${obj.path.join('.')}.${x} => ${obj.path.reduce((pV, cV)=>pV[cV], finalObj) ? obj.path.reduce((pV, cV)=>pV[cV], finalObj)[x] : 'Unreachable'}` : null));
     });
+    accessedCount+=toBeAccessed.filter((x)=>x === null).length;
+    toBeAccessed = toBeAccessed.filter((x)=>x);
     console.warn('\x1b[32mSuccessfully collected coverage data!');
     return {keyCount, accessedCount, toBeAccessed};
   }
@@ -141,6 +144,30 @@ Remaining : \n\t${toBeAccessed.join('\n\t')}
 ---     `;
   }
 }
+
+const ignoreFile = parseIgnoreFile(existsSync('../.coverageignore') ? readFileSync('../.coverageignore').toString() : '');
+/**
+ * Parses Ignore File
+ * @param {string} content File content
+ * @returns {string[]}
+ */
+function parseIgnoreFile(content) {
+  return content.split('\n').map((x)=>x.split('.'));
+}
+/**
+ * Checks if this path shouldn't be counted
+ * @param {string[]} path Path to object
+ * @returns {boolean}
+ */
+function isIgnored(path) {
+  let matchingIgnores = ignoreFile;
+  for (const part of path) {
+    matchingIgnores = matchingIgnores.filter((x)=>[part, '*'].includes(x[path.indexOf(part)] || '*'));
+    if (!matchingIgnores.length) return true;
+  }
+  return false;
+}
+
 /**
  * @typedef {Object} CoverageData
  * @property {number} keyCount Total Key Count
